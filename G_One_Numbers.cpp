@@ -1,0 +1,72 @@
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+using namespace std;
+template <typename T>
+using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update>;
+// Consistency doesn't guarantee you will be successful
+// but not being consistent will guarantee that you won't reach success.
+#define int long long
+#define ld long double
+#define pii pair<int,int>
+#define vec vector<int>
+#define vvec vector<vec>
+#define R return
+#define all(v) v.begin(),v.end()
+#define rll(v) v.rbegin(),v.rend()
+#define pb push_back
+#define rep(n) for(int i=0;i<n;i++)
+#define gcd __gcd
+template<class T>
+using min_heap = priority_queue<T, vector<T>, greater<T>>;
+const int inf = 0x3f3f3f3f3f3f3f3fLL;
+const int mod = 998244353; // 1000000007
+int lcm(int a, int b){ return (a/gcd(a,b))*b;}
+void print(int a) { cout<<a<<endl;}
+void print(vec v) { for(int i : v) cout<<i<<' '; cout<<endl; }
+void print(string s) { cout<<s<<endl; }
+
+vector<int> isPrime;
+void seive(int N = 1e6){ isPrime.resize(N+1,1); isPrime[0]=0; isPrime[1]=0;
+    for(int i=2;i<=N;i++) if(isPrime[i]) for(int j=i*i;j<=N;j+=i) isPrime[j] = 0;}
+
+int solve(string &s){
+    vector<vvec> dp(10, vvec(2, vec(100, 0)));
+    int n = s.size();
+    for(int i=0;i<100;i++){
+        dp[n][1][i] = isPrime[i];
+        dp[n][0][i] = isPrime[i];
+    }
+    for(int i=n-1;i>=0;i--){
+        for(int j=80;j>=0;j--){
+            for(int k=0;k<2;k++){
+                int limit = (k ? s[i]-'0' : 9);
+                for(int l=0;l<=limit;l++){
+                    dp[i][k][j] += dp[i+1][k&(l == s[i]-'0')][j+l];
+                }
+            }
+        }
+    }
+    return dp[0][1][0];
+}
+
+inline void n_lamba_29(){
+    int o;
+    string r;
+    cin>>o>>r;
+    string l = to_string(o-1);
+    print(solve(r)-solve(l));
+}
+
+
+int32_t main(){
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    seive(100);
+    int _;
+    cin>>_;
+    while(_-->0)
+    n_lamba_29();
+}
