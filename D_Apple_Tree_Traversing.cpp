@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define int long long
 
 inline void n_lamba_29() {
     int n;
