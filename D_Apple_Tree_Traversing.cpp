@@ -32,9 +32,9 @@ inline void n_lamba_29() {
     };
 
     function<void(int)> Diameter = [&](int node) {
-        par.assign(n+1, -1);
+
         auto [x, dist_x] = dfs(node, -1);
-        par.assign(n+1, -1);
+        
         auto [y, dist_y] = dfs(x, -1);
         int d = dist_y;
 
