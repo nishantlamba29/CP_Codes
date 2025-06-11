@@ -1,4 +1,4 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 #define int long long
 using i128 = __int128_t;
@@ -46,31 +46,26 @@ public:
     }
 };
 
-int32_t main() {
-    cin.tie(0);
-    ios_base::sync_with_stdio(0);
+int32_t main(){
+    cin.tie(nullptr);
+    ios_base::sync_with_stdio(false);
 
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n);
-    for(int i = 0;i < n; i++) cin >> a[i];
-    for(int i = 0;i < n; i++) cin >> b[i];
+    int n, c;
+    cin >> n >> c;
+    vector<int> h(n);
+    for(int i=0;i<n;i++) cin >> h[i];
+
+    CHT_Min ch;
 
     vector<int> dp(n);
-    CHT_Min ch;
-    Line l(b[0], 0);
+    Line l(-2 * h[0], h[0] * h[0]);
     ch.add(l);
-    // j = 0 to i-1
-    // dp[i] = min(dp[i], dp[j] + b[j] * a[i]) 
     for(int i=1;i<n;i++) {
-        dp[i] = ch.query(a[i]);
-        Line l(b[i], dp[i]);
+        dp[i] = c + h[i] * h[i] + ch.query(h[i]);
+        Line l(-2 * h[i], h[i] * h[i] + dp[i]);
         ch.add(l);
     }
-
     cout << dp[n-1];
-
-
 
     return 0;
 }
