@@ -2,40 +2,42 @@
 using namespace std;
 
 const int N = 50005;
-int n, k;
+const int K = 505;
 vector<int> adj[N];
-int sz[N], par2[N];
-bool mark[N];
+int dp[N][K], temp[K];
+int n, k;
 
-void dfs_sz(int node, int p) {
-    sz[node] = 1;   
+int64_t ans = 0;
+
+void dfs(int node = 1, int p = -1) {
+    dp[node][0] = 1;
     for(auto &j : adj[node]) {
-        if(j != p && !mark[j]) {
-            dfs_sz(j, node);
-            sz[node] += sz[j];
+        if(j != p) {
+            dfs(j, node);
+            for(int i=1;i<=k;i++) {
+                dp[node][i] += dp[j][i-1];
+            }
         }
     }
 }
 
-int dfs2(int node, int p, int total) { // return centroid
-    for(auto &j : adj[node]) {
-        if(j != p && !mark[j] && sz[j] > total / 2) {
-            return dfs2(j, node, total);
-        }
-    }
-    return node;
-}
+void dfs2(int node = 1, int p = -1) {
+    ans += dp[node][k];
 
-void Decompose(int node, int p) {
-    dfs_sz(node, p);
-    int cen = dfs2(node, p, sz[node]);
-    mark[cen] = 1;
-    par2[cen] = p;
-    for(auto &j : adj[cen]) {
-        if(!mark[j]) {
-            Decompose(j, cen);
+    for(auto &j : adj[node]) {
+        if(j == p) continue;
+        // dp[j][i] += (dp[node][i-1] - dp[j][i-2])
+
+        for(int i=0;i<=k;i++) temp[i] = dp[j][i];
+
+        dp[j][1] += dp[node][0];
+        for(int i=2;i<=k;i++) {
+            dp[j][i] += dp[node][i-1] - temp[i-2];
         }
+        
+        dfs2(j, node);
     }
+
 }
 
 int main(){
@@ -49,14 +51,11 @@ int main(){
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    for(int i = 0; i <= n; i++) {
-        mark[i] = false;
-        sz[i] = 0;
-        par2[i] = -1;
-    }
 
-    Decompose(1, -1);
-    
+    dfs();
+    dfs2();
+
+    cout << ans / 2 << "\n";
 
     return 0;
 }
