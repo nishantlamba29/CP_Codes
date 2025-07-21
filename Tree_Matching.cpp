@@ -1,68 +1,36 @@
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-using namespace __gnu_pbds;
 using namespace std;
-template <typename T>
-using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update>;
-// Consistency doesn't guarantee you will be successful
-// but not being consistent will guarantee that you won't reach success.
-#define int long long
-#define ld long double
-#define pii pair<int,int>
-#define vec vector<int>
-#define vvec vector<vec>
-#define R return
-#define all(v) v.begin(),v.end()
-#define rll(v) v.rbegin(),v.rend()
-#define pb push_back
-#define rep(n) for(int i=0;i<n;i++)
-#define gcd __gcd
-template<class T>
-using min_heap = priority_queue<T, vector<T>, greater<T>>;
-const int inf = 0x3f3f3f3f3f3f3f3fLL;
-const int mod = 998244353; // 1000000007
-int lcm(int a, int b){ return (a/gcd(a,b))*b;}
-void print(int a) { cout<<a<<endl;}
-void print(vec v) { for(int i : v) cout<<i<<' '; cout<<endl; }
-void print(string s) { cout<<s<<endl; }
 
-const int N = 2e5;
-vector<int> adj[N+1];
+const int N = 2e5 + 5;
+vector<int> adj[N];
+int dp[N][2];
 
-int dfs(int &cnt ,int node = 1, int p = -1){
-    bool flag = 1;
-    for(auto &j : adj[node]){
-        if(j != p){
-            int val = dfs(cnt, j, node);
-            if(val && flag){
-                cnt++;
-                flag = 0;
-            }
-        }
+void dfs(int node = 1, int p = -1) {
+    for(auto &j : adj[node]) {
+        if(j == p) continue;
+        dfs(j, node);
+        dp[node][0] += max(dp[j][0], dp[j][1]); // not include 
     }
-    return flag;
+    for(auto &j : adj[node]) {
+        if(j == p) continue;
+        dp[node][1] = max(dp[node][1], dp[node][0] - dp[j][1] + dp[j][0] + 1);
+    }
 }
 
-inline void n_lamba_29(){
+int main(){
+    cin.tie(nullptr);
+    ios_base::sync_with_stdio(false);
+
     int n;
-    cin>>n;
-    for(int i=2;i<=n;i++){
-        int u,v;
-        cin>>u>>v;
-        adj[v].pb(u);
-        adj[u].pb(v);
+    cin >> n;
+    for(int i=0;i<n-1;i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
-    int cnt = 0;
-    dfs(cnt);
-    print(cnt);
+    dfs();
+    cout << max(dp[1][0], dp[1][1]) << "\n";
 
-}
-
-
-int32_t main(){
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
-    n_lamba_29();
+    return 0;
 }
