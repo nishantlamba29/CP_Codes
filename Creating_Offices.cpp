@@ -81,6 +81,7 @@ void Decompose(int node, int p) {
 // update: we open an office at u
 void update(int u) {
     int v = u;
+    best[u] = 0;
     // walk up the centroid‐parent chain
     while (v != -1) {
         best[v] = min(best[v], dist(v, u));
